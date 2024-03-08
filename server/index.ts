@@ -23,6 +23,11 @@ io.on("connection", (socket) => {
     })
     socket.on("message", (data, room) => {
         if (room.length) {
+            const newMessage = new Message({
+                content: data,
+                sender: socket.id
+            })
+            newMessage.save()
             data && io.to(room).emit("message", data)
             console.log("sending " + data + " to room " + room)
         } else {
