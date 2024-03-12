@@ -99,17 +99,16 @@ console.log(inbox)
       ) : (
         <div className="chat-img h-screen flex justify-center items-center ">
         {/* component */}
-      
-
         <div
           style={{
             boxShadow: "0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgb(0 0 0 / 0.05)",
+            scrollbarWidth: "none"
           }}
           className="overflow-x-auto  bg-gray-400 p-6 rounded-lg border border-[#e5e7eb] w-[440px] h-[634px]"
         >
           {/* Heading */}
           <div className="flex flex-col space-y-1.5 pb-6">
-            <h2 className="font-semibold text-xl tracking-tight ">{username}</h2>
+            <h2 className="font-semibold text-2xl tracking-tight underline text-orange-600  ">{username}</h2>
           </div>
 
           {/* Chat Container */}
@@ -127,7 +126,7 @@ console.log(inbox)
                     key={index}
                   >
                     {/* {msg.sender.username} */}
-                    <div className="flex items-bottom justify-between">
+                    <div className="flex items-bottom justify-between text-red-700 font-semibold">
                       {msg.sender.username}
                     </div>
                     
