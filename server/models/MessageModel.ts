@@ -11,6 +11,7 @@ const MessageModel = new mongoose.Schema<Message>({
     },
     sender: {
         type: String,
+        ref:"User"
     }
 })
 

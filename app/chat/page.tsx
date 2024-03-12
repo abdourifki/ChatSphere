@@ -1,33 +1,35 @@
 "use client";
 import { FormEvent, useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import Background from "../assets/bg-img.webp";
+import { io } from 'socket.io-client'
+import axios from "axios";
+const socket = io("http://localhost:3030")
 
 export default function Home() {
   const [message, setMsg] = useState<any>(undefined);
-  const [room, setRoom] = useState<any>("room");
+  const [room, setRoom] = useState<any>("room1");
   const [inbox, setInbox] = useState<any[]>([]);
-  const socket = io("http://localhost:3030");
 
   useEffect(() => {
+    const getMsg=async()=>{
+      const res=await axios.get("http://localhost:9000/")
+      setInbox(res.data)
+      console.log(res.data)
+    }
+    getMsg()    
     socket.on("message", (msg: string) => {
-      setInbox((prevChat) => [...prevChat, msg]);
+      getMsg()
     });
 
-    return () => {
-      socket.off("message");
-    };
   }, []);
 
-  const senMsg = (e: FormEvent) => {
+  const senMsg =async (e: FormEvent) => {
+    
     e.preventDefault();
+    // console.log('message, room',message, room);
+    
     socket.emit("message", message, room);
     setMsg("");
-  };
-
-  const joinRoom = (e: FormEvent) => {
-    e.preventDefault();
-    socket.emit("joinRoom", room);
   };
 
   return (

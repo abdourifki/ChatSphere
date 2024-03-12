@@ -3,8 +3,12 @@ import { Server } from "socket.io"
 import http from "http"
 const app = express()
 import Message from './models/MessageModel';
+import User from "./models/UserModel";
 import './connection/Db';
-
+import router from "./routes/router";
+import cors from "cors"
+app.use(cors())
+app.use(router)
 
 
 const server = http.createServer(app)
@@ -21,24 +25,30 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("user disconnected")
     })
-    socket.on("message", (data, room) => {
-        if (room.length) {
+    socket.on("message", async(messageData,user) => {//*/
+        console.log(user)
+        if (messageData.room) {
             const newMessage = new Message({
-                content: data,
-                sender: socket.id
+                content: messageData.message,
+                sender : user
             })
-            newMessage.save()
-            data && io.to(room).emit("message", data)
-            console.log("sending " + data + " to room " + room)
+           await newMessage.save()
+           socket.emit("message")
         } else {
             console.log("please join the room first!")
         }
     })
-    socket.on("joinRoom", (data) => {
+    socket.on("joinRoom", (username) => {
         socket.join("room")
+        const user = new User({
+            username:username
+        })
+        user.save()
+        socket.emit("joinRoom", user._id)
+
     })
 })
 
-server.listen(3030, () => {
-    console.log("Server running on port 3030")
+server.listen(9000, () => {
+    console.log("Server running on port 9000")
 })
